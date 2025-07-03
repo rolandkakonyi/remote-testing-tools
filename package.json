@@ -10,9 +10,9 @@
     "build": "yarn workspaces foreach -A run build",
     "test": "yarn workspaces foreach -A run test",
     "lint": "yarn workspaces foreach -A run lint",
-    "dev": "yarn workspace packages/server dev",
-    "start": "yarn workspace packages/server start",
-    "generate:swift-client": "yarn workspace packages/server openapi:generate && npx @openapitools/openapi-generator-cli generate -i openapi.json -g swift5 -o packages/swift-client --additional-properties=projectName=RemoteTestToolsClient,responseAs=Async,swiftVersion=5.10"
+    "dev": "yarn workspace server dev",
+    "start": "yarn workspace server start",
+    "generate:swift-client": "yarn workspace server openapi:generate && npx @openapitools/openapi-generator-cli generate -i openapi.json -g swift5 -o packages/swift-client --additional-properties=projectName=RemoteTestToolsClient,responseAs=Async,swiftVersion=5.10"
   },
   "devDependencies": {
     "@openapitools/openapi-generator-cli": "^2.13.7"
