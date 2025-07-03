@@ -27,8 +27,8 @@
   "packageManager": "yarn@4.0.0",
   "lint-staged": {
     "packages/server/src/**/*.{ts,js}": [
-      "yarn generate:swift-client",
-      "git add packages/swift-client/ packages/server/openapi.json"
+      "bash -c 'yarn generate:swift-client'",
+      "git add -f packages/swift-client/ packages/server/openapi.json"
     ]
   }
 }

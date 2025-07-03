@@ -25,6 +25,7 @@ const geminiResponseSchema = {
 } as const;
 
 export async function geminiRoutes(fastify: FastifyInstance): Promise<void> {
+  // Route for executing Gemini CLI commands
   fastify.post<{ Body: GeminiRequest; Reply: GeminiResponse }>(
     '/gemini/ask',
     {
