@@ -1,0 +1,24 @@
+{
+  "name": "remote-testing-tools",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Local Action Server - A lightweight, extensible server for triggering local command-line actions",
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "yarn workspaces foreach -A run build",
+    "test": "yarn workspaces foreach -A run test",
+    "lint": "yarn workspaces foreach -A run lint",
+    "dev": "yarn workspace server dev",
+    "start": "yarn workspace server start",
+    "generate:swift-client": "yarn workspace server openapi:generate && npx @openapitools/openapi-generator-cli generate -i openapi.json -g swift5 -o packages/swift-client --additional-properties=projectName=RemoteTestToolsClient,responseAs=Async,swiftVersion=5.10"
+  },
+  "devDependencies": {
+    "@openapitools/openapi-generator-cli": "^2.13.7"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "packageManager": "yarn@4.0.0"
+}
