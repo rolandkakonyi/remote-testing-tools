@@ -52,15 +52,33 @@ yarn openapi:generate
 ```
 
 ### Swift Client Generation
+
+**Automatic Sync**: The Swift client is automatically regenerated when server API files change via pre-commit hooks.
+
 ```bash
-# Generate Swift client from OpenAPI spec
+# Generate Swift client from OpenAPI spec (manual)
 yarn generate:swift-client
+
+# Validate Swift client is up-to-date
+yarn validate:swift-client
 ```
 
-This command:
-1. Generates OpenAPI spec from server
+#### How it works:
+1. **Pre-commit Hook**: When you commit changes to `packages/server/src/`, the Swift client is automatically regenerated and staged
+2. **CI Validation**: GitHub Actions verifies the Swift client is up-to-date and fails if not
+3. **Manual Generation**: You can still run `yarn generate:swift-client` manually when needed
+
+#### Process:
+1. Generates OpenAPI spec from server using Fastify's swagger plugin
 2. Uses `@openapitools/openapi-generator-cli` to create Swift 5.10 client
-3. Outputs to `packages/swift-client/`
+3. Outputs to `packages/swift-client/Sources/OpenAPIs/`
+
+#### If CI fails with "Swift client out of sync":
+```bash
+yarn generate:swift-client
+git add packages/swift-client/ packages/server/openapi.json
+git commit --amend --no-edit
+```
 
 ## Technology Stack
 
