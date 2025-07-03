@@ -1,5 +1,6 @@
 # Dependencies
 node_modules/
+packages/*/node_modules/
 .yarn/cache/
 .yarn/unplugged/
 .yarn/build-state.yml
@@ -8,6 +9,7 @@ node_modules/
 
 # Build outputs
 dist/
+packages/*/dist/
 build/
 *.tsbuildinfo
 
@@ -79,7 +81,7 @@ Thumbs.db
 
 # Swift Package Manager
 .build/
-Packages/
+/Packages/
 Package.resolved
 
 # Xcode

@@ -23,7 +23,7 @@ jobs:
         run: corepack enable
 
       - name: Install dependencies
-        run: yarn install --immutable
+        run: yarn install
 
       - name: Run linter
         run: yarn lint
@@ -48,7 +48,7 @@ jobs:
         run: corepack enable
 
       - name: Install dependencies
-        run: yarn install --immutable
+        run: yarn install
 
       - name: Run unit and integration tests
         run: yarn test
@@ -68,4 +68,5 @@ jobs:
 
       - name: Verify Swift Client Build
         if: runner.os == 'macOS'
+        working-directory: packages/swift-client
         run: swift build
