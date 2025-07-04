@@ -143,28 +143,6 @@ describe('Gemini Route Handler (Unit Tests)', () => {
       });
     });
 
-    it('should handle valid request with prompt and args', async () => {
-      const mockResult = {
-        stdout: 'Test output with args',
-        stderr: '',
-        exitCode: 0
-      };
-
-      mockedQueue.add.mockImplementation(async (fn) => await fn());
-      mockedExeca.mockResolvedValue(mockResult as any);
-
-      mockRequest.body = { 
-        prompt: 'Test prompt',
-        args: ['--verbose', '--format=json']
-      };
-
-      await routeHandler(mockRequest, mockReply);
-
-      expect(mockReply.send).toHaveBeenCalledWith({
-        output: 'Test output with args',
-        exitCode: 0
-      });
-    });
 
     it('should handle execa errors with exit code', async () => {
       const mockError = {
@@ -234,17 +212,20 @@ describe('Gemini Route Handler (Unit Tests)', () => {
       mockedExeca.mockResolvedValue(mockResult as any);
 
       mockRequest.body = { 
-        prompt: 'Test prompt',
-        args: ['--verbose']
+        prompt: 'Test prompt'
       };
 
       await routeHandler(mockRequest, mockReply);
 
       expect(mockedMkdtemp).toHaveBeenCalledWith('/tmp/gemini-');
-      expect(mockedExeca).toHaveBeenCalledWith('gemini', ['--sandbox', 'Test prompt', '--verbose'], {
+      expect(mockedExeca).toHaveBeenCalledWith('gemini', ['--sandbox'], {
+        input: 'Test prompt',
         timeout: 30000,
         killSignal: 'SIGTERM',
-        cwd: '/tmp/gemini-test123'
+        cwd: '/tmp/gemini-test123',
+        env: expect.objectContaining({
+          PATH: expect.any(String)
+        })
       });
       expect(mockedRm).toHaveBeenCalledWith('/tmp/gemini-test123', { recursive: true, force: true });
     });
@@ -361,11 +342,15 @@ describe('Gemini Route Handler (Unit Tests)', () => {
         );
         expect(mockedExeca).toHaveBeenCalledWith(
           'gemini',
-          ['--sandbox', 'Here are the user provided files for context: @test.txt\n\nTest prompt'],
+          ['--sandbox'],
           {
+            input: 'Here are the user provided files for context: @test.txt\n\nTest prompt',
             timeout: 30000,
             killSignal: 'SIGTERM',
-            cwd: '/tmp/gemini-test123'
+            cwd: '/tmp/gemini-test123',
+            env: expect.objectContaining({
+              PATH: expect.any(String)
+            })
           }
         );
         expect(mockReply.send).toHaveBeenCalledWith({
@@ -412,11 +397,15 @@ describe('Gemini Route Handler (Unit Tests)', () => {
         );
         expect(mockedExeca).toHaveBeenCalledWith(
           'gemini',
-          ['--sandbox', 'Here are the user provided files for context: @file1.txt @file2.png\n\nTest prompt'],
+          ['--sandbox'],
           {
+            input: 'Here are the user provided files for context: @file1.txt @file2.png\n\nTest prompt',
             timeout: 30000,
             killSignal: 'SIGTERM',
-            cwd: '/tmp/gemini-test123'
+            cwd: '/tmp/gemini-test123',
+            env: expect.objectContaining({
+              PATH: expect.any(String)
+            })
           }
         );
       });
@@ -441,11 +430,15 @@ describe('Gemini Route Handler (Unit Tests)', () => {
         expect(mockedWriteFile).not.toHaveBeenCalled();
         expect(mockedExeca).toHaveBeenCalledWith(
           'gemini',
-          ['--sandbox', 'Test prompt'],
+          ['--sandbox'],
           {
+            input: 'Test prompt',
             timeout: 30000,
             killSignal: 'SIGTERM',
-            cwd: '/tmp/gemini-test123'
+            cwd: '/tmp/gemini-test123',
+            env: expect.objectContaining({
+              PATH: expect.any(String)
+            })
           }
         );
       });
@@ -470,11 +463,15 @@ describe('Gemini Route Handler (Unit Tests)', () => {
         expect(mockedWriteFile).not.toHaveBeenCalled();
         expect(mockedExeca).toHaveBeenCalledWith(
           'gemini',
-          ['--sandbox', 'Test prompt'],
+          ['--sandbox'],
           {
+            input: 'Test prompt',
             timeout: 30000,
             killSignal: 'SIGTERM',
-            cwd: '/tmp/gemini-test123'
+            cwd: '/tmp/gemini-test123',
+            env: expect.objectContaining({
+              PATH: expect.any(String)
+            })
           }
         );
       });

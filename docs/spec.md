@@ -74,13 +74,12 @@ The Gemini CLI execution has been enhanced with two key security improvements:
 
 **POST /gemini/ask**
 
-This endpoint executes a Gemini CLI command with the provided prompt and optional arguments.
+This endpoint executes a Gemini CLI command with the provided prompt. All Gemini CLI arguments are controlled by the server implementation for security.
 
 **Request Body:**
 ```json
 {
   "prompt": "string (required)",
-  "args": ["string"],
   "files": [
     {
       "fileName": "string (required)",

@@ -55,12 +55,6 @@
                   "prompt": {
                     "type": "string"
                   },
-                  "args": {
-                    "type": "array",
-                    "items": {
-                      "type": "string"
-                    }
-                  },
                   "files": {
                     "type": "array",
                     "items": {

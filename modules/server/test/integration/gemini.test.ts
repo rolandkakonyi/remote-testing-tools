@@ -90,42 +90,17 @@ describe('Gemini Integration Tests', () => {
       });
 
       // Verify execa was called with correct arguments including --sandbox and cwd
-      expect(mockedExeca).toHaveBeenCalledWith('gemini', ['--sandbox', 'Test integration prompt'], {
+      expect(mockedExeca).toHaveBeenCalledWith('gemini', ['--sandbox'], {
+        input: 'Test integration prompt',
         timeout: 30000,
         killSignal: 'SIGTERM',
-        cwd: '/tmp/gemini-integration-test'
-      });
-    });
-
-    it('should handle gemini execution with additional args', async () => {
-      const mockResult = {
-        stdout: 'Integration test with args',
-        stderr: '',
-        exitCode: 0
-      };
-
-      mockedExeca.mockResolvedValue(mockResult as any);
-
-      const response = await request(app.server)
-        .post('/gemini/ask')
-        .send({ 
-          prompt: 'Test prompt',
-          args: ['--verbose', '--format=json']
+        cwd: '/tmp/gemini-integration-test',
+        env: expect.objectContaining({
+          PATH: expect.any(String)
         })
-        .expect(200);
-
-      expect(response.body).toEqual({
-        output: 'Integration test with args',
-        exitCode: 0
-      });
-
-      // Verify execa was called with correct arguments
-      expect(mockedExeca).toHaveBeenCalledWith('gemini', ['--sandbox', 'Test prompt', '--verbose', '--format=json'], {
-        timeout: 30000,
-        killSignal: 'SIGTERM',
-        cwd: '/tmp/gemini-integration-test'
       });
     });
+
 
     it('should handle gemini command errors and return 200 with error details', async () => {
       const mockError = {
@@ -198,10 +173,14 @@ describe('Gemini Integration Tests', () => {
       });
 
       // Verify execa was called with string version
-      expect(mockedExeca).toHaveBeenCalledWith('gemini', ['--sandbox', '123'], {
+      expect(mockedExeca).toHaveBeenCalledWith('gemini', ['--sandbox'], {
+        input: '123',
         timeout: 30000,
         killSignal: 'SIGTERM',
-        cwd: '/tmp/gemini-integration-test'
+        cwd: '/tmp/gemini-integration-test',
+        env: expect.objectContaining({
+          PATH: expect.any(String)
+        })
       });
     });
 
@@ -323,51 +302,7 @@ describe('Gemini Integration Tests', () => {
       expect(response.body).toHaveProperty('error');
     });
 
-    it('should accept valid args array', async () => {
-      const mockResult = {
-        stdout: 'Success with args',
-        stderr: '',
-        exitCode: 0
-      };
 
-      mockedExeca.mockResolvedValue(mockResult as any);
-
-      const response = await request(app.server)
-        .post('/gemini/ask')
-        .send({ 
-          prompt: 'Test prompt',
-          args: ['--flag1', '--flag2=value']
-        })
-        .expect(200);
-
-      expect(response.body).toEqual({
-        output: 'Success with args',
-        exitCode: 0
-      });
-    });
-
-    it('should handle empty args array', async () => {
-      const mockResult = {
-        stdout: 'Success with empty args',
-        stderr: '',
-        exitCode: 0
-      };
-
-      mockedExeca.mockResolvedValue(mockResult as any);
-
-      const response = await request(app.server)
-        .post('/gemini/ask')
-        .send({ 
-          prompt: 'Test prompt',
-          args: []
-        })
-        .expect(200);
-
-      expect(response.body).toEqual({
-        output: 'Success with empty args',
-        exitCode: 0
-      });
-    });
   });
 
   describe('Temporary Directory Management', () => {
@@ -442,11 +377,15 @@ describe('Gemini Integration Tests', () => {
       // Verify prompt was modified with file context
       expect(mockedExeca).toHaveBeenCalledWith(
         'gemini',
-        ['--sandbox', 'Here are the user provided files for context: @test.txt\n\nAnalyze this file'],
+        ['--sandbox'],
         {
+          input: 'Here are the user provided files for context: @test.txt\n\nAnalyze this file',
           timeout: 30000,
           killSignal: 'SIGTERM',
-          cwd: '/tmp/gemini-integration-test'
+          cwd: '/tmp/gemini-integration-test',
+          env: expect.objectContaining({
+            PATH: expect.any(String)
+          })
         }
       );
     });
@@ -497,11 +436,15 @@ describe('Gemini Integration Tests', () => {
       // Verify prompt was modified with both files
       expect(mockedExeca).toHaveBeenCalledWith(
         'gemini',
-        ['--sandbox', 'Here are the user provided files for context: @file1.txt @file2.json\n\nCompare these files'],
+        ['--sandbox'],
         {
+          input: 'Here are the user provided files for context: @file1.txt @file2.json\n\nCompare these files',
           timeout: 30000,
           killSignal: 'SIGTERM',
-          cwd: '/tmp/gemini-integration-test'
+          cwd: '/tmp/gemini-integration-test',
+          env: expect.objectContaining({
+            PATH: expect.any(String)
+          })
         }
       );
     });
@@ -534,11 +477,15 @@ describe('Gemini Integration Tests', () => {
       // Verify prompt was not modified
       expect(mockedExeca).toHaveBeenCalledWith(
         'gemini',
-        ['--sandbox', 'No files here'],
+        ['--sandbox'],
         {
+          input: 'No files here',
           timeout: 30000,
           killSignal: 'SIGTERM',
-          cwd: '/tmp/gemini-integration-test'
+          cwd: '/tmp/gemini-integration-test',
+          env: expect.objectContaining({
+            PATH: expect.any(String)
+          })
         }
       );
     });
@@ -570,11 +517,15 @@ describe('Gemini Integration Tests', () => {
       // Verify prompt was not modified
       expect(mockedExeca).toHaveBeenCalledWith(
         'gemini',
-        ['--sandbox', 'No files property'],
+        ['--sandbox'],
         {
+          input: 'No files property',
           timeout: 30000,
           killSignal: 'SIGTERM',
-          cwd: '/tmp/gemini-integration-test'
+          cwd: '/tmp/gemini-integration-test',
+          env: expect.objectContaining({
+            PATH: expect.any(String)
+          })
         }
       );
     });

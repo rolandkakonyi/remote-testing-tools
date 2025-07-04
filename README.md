@@ -103,8 +103,11 @@ corepack enable
 # Install dependencies
 yarn install
 
-# Run tests
+# Run unit tests (fast, use mocks)
 yarn test
+
+# Run end-to-end tests (manual only, requires real Gemini CLI)
+yarn test:e2e
 
 # Start development server
 yarn dev
@@ -121,11 +124,55 @@ yarn generate:swift-client
 ```
 ├── modules/
 │   ├── server/          # Node.js API server
+│   │   ├── test/e2e/    # End-to-end tests (manual execution)
+│   │   └── src/         # Server source code
 │   └── swift-client/    # Generated Swift client
 ├── .github/workflows/   # CI/CD workflows
 ├── docs/                # Project documentation
 └── Package.swift        # Swift Package Manager manifest
 ```
+
+### Testing
+
+The project includes two types of tests:
+
+#### Unit Tests (Automated)
+```bash
+# Run all unit tests with mocks
+yarn test
+
+# Run tests with coverage
+yarn test:coverage
+
+# Run tests in watch mode
+yarn vitest
+```
+
+Unit tests use mocks and run in CI/CD pipelines. They're fast and don't require external dependencies.
+
+#### End-to-End Tests (Manual Only)
+
+E2E tests verify real integration with the Gemini CLI but require manual execution:
+
+**Prerequisites:**
+1. Install Gemini CLI: `npm install -g @google/gemini-cli`
+2. Configure authentication: `export GEMINI_API_KEY=your_key_here`
+
+**Running E2E Tests:**
+```bash
+# Run E2E tests once
+yarn test:e2e
+
+# Run E2E tests in watch mode
+yarn test:e2e:watch
+```
+
+**Important:** E2E tests are automatically skipped in CI environments because they:
+- Require real API access and authentication
+- Make actual API calls that consume quota
+- Are slower and less predictable than unit tests
+
+For detailed E2E testing instructions, see [`modules/server/README.e2e.md`](modules/server/README.e2e.md).
 
 ## API Endpoints
 
@@ -139,7 +186,6 @@ yarn generate:swift-client
 ```json
 {
   "prompt": "string (required)",
-  "args": ["string"] (optional),
   "files": [
     {
       "fileName": "string (required)",

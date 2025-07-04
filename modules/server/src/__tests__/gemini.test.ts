@@ -79,49 +79,21 @@ describe('Gemini Routes', () => {
         exitCode: 0
       });
 
-      expect(mockedExeca).toHaveBeenCalledWith('gemini', ['--sandbox', 'Hello world'], {
+      expect(mockedExeca).toHaveBeenCalledWith('gemini', ['--sandbox'], {
+        input: 'Hello world',
         timeout: 30000,
         killSignal: 'SIGTERM',
-        cwd: '/tmp/gemini-abc123'
-      });
-      
-      // Verify temporary directory operations
-      expect(mockedMkdtemp).toHaveBeenCalledWith('/tmp/gemini-');
-      expect(mockedRm).toHaveBeenCalledWith('/tmp/gemini-abc123', { recursive: true, force: true });
-    });
-
-    it('should execute gemini command with additional args', async () => {
-      const mockResult = {
-        stdout: 'Response with args',
-        stderr: '',
-        exitCode: 0
-      };
-
-      mockedExeca.mockResolvedValueOnce(mockResult as any);
-
-      const response = await request(app.server)
-        .post('/gemini/ask')
-        .send({ 
-          prompt: 'Hello world',
-          args: ['--verbose', '--format=json']
+        cwd: '/tmp/gemini-abc123',
+        env: expect.objectContaining({
+          PATH: expect.any(String)
         })
-        .expect(200);
-
-      expect(response.body).toEqual({
-        output: 'Response with args',
-        exitCode: 0
-      });
-
-      expect(mockedExeca).toHaveBeenCalledWith('gemini', ['--sandbox', 'Hello world', '--verbose', '--format=json'], {
-        timeout: 30000,
-        killSignal: 'SIGTERM',
-        cwd: '/tmp/gemini-abc123'
       });
       
       // Verify temporary directory operations
       expect(mockedMkdtemp).toHaveBeenCalledWith('/tmp/gemini-');
       expect(mockedRm).toHaveBeenCalledWith('/tmp/gemini-abc123', { recursive: true, force: true });
     });
+
 
     it('should handle gemini command errors', async () => {
       const mockError = {
@@ -199,10 +171,14 @@ describe('Gemini Routes', () => {
         exitCode: 0
       });
 
-      expect(mockedExeca).toHaveBeenCalledWith('gemini', ['--sandbox', '123'], {
+      expect(mockedExeca).toHaveBeenCalledWith('gemini', ['--sandbox'], {
+        input: '123',
         timeout: 30000,
         killSignal: 'SIGTERM',
-        cwd: '/tmp/gemini-abc123'
+        cwd: '/tmp/gemini-abc123',
+        env: expect.objectContaining({
+          PATH: expect.any(String)
+        })
       });
       
       // Verify temporary directory operations
@@ -329,10 +305,14 @@ describe('Gemini Routes', () => {
       expect(mockedTmpdir).toHaveBeenCalled();
       expect(mockedJoin).toHaveBeenCalledWith('/custom/tmp', 'gemini-');
       expect(mockedMkdtemp).toHaveBeenCalledWith('/custom/tmp/gemini-');
-      expect(mockedExeca).toHaveBeenCalledWith('gemini', ['--sandbox', 'Hello world'], {
+      expect(mockedExeca).toHaveBeenCalledWith('gemini', ['--sandbox'], {
+        input: 'Hello world',
         timeout: 30000,
         killSignal: 'SIGTERM',
-        cwd: '/custom/tmp/gemini-xyz999'
+        cwd: '/custom/tmp/gemini-xyz999',
+        env: expect.objectContaining({
+          PATH: expect.any(String)
+        })
       });
       expect(mockedRm).toHaveBeenCalledWith('/custom/tmp/gemini-xyz999', { recursive: true, force: true });
     });

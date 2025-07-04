@@ -5,7 +5,6 @@ export interface GeminiRequestFile {
 
 export interface GeminiRequest {
   prompt: string;
-  args?: string[];
   files?: GeminiRequestFile[];
 }
 

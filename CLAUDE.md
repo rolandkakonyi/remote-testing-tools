@@ -35,7 +35,7 @@ yarn lint
 
 ### Server-specific (from modules/server/)
 ```bash
-# Run server tests with Vitest (non-interactive)
+# Run server unit tests with Vitest (non-interactive, uses mocks)
 yarn test
 
 # Run server with coverage
@@ -44,12 +44,22 @@ yarn test:coverage
 # Run tests in watch mode (interactive)
 yarn vitest
 
+# Run end-to-end tests (manual only, requires real Gemini CLI setup)
+yarn test:e2e
+
 # Lint server code
 yarn lint
 
 # Generate OpenAPI spec
 yarn openapi:generate
 ```
+
+### Testing Strategy
+
+- **Unit Tests**: Fast, automated, use mocks, run in CI
+- **E2E Tests**: Manual execution only, require real Gemini CLI and API key
+- E2E tests automatically skip in CI environments (`process.env.CI`)
+- Use E2E tests before releases to verify real-world functionality
 
 ### Swift Client Generation
 
@@ -95,6 +105,17 @@ git commit --amend --no-edit
 - Extensible architecture - new endpoints follow the pattern in `routes/gemini.ts`
 - Swift client auto-generates from OpenAPI spec - don't edit manually
 - Uses `tsx` for TypeScript execution in development
+
+## Development Workflow
+
+**IMPORTANT**: Before completing any task, you MUST run the following commands to ensure code quality:
+
+1. **Linting**: `yarn lint` - Fix code style and potential issues
+2. **Type checking**: Handled by TypeScript compiler during build
+3. **Testing**: `yarn test` - Ensure all tests pass
+4. **Build**: `yarn build` - Verify the project builds successfully
+
+This workflow ensures code quality and prevents issues from being introduced into the codebase.
 
 ## Configuration
 

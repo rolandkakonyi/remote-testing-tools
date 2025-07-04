@@ -21,7 +21,7 @@ Execute a Gemini CLI command with the provided prompt and optional file attachme
 // The following code samples are still beta. For any issue, please report via http://github.com/OpenAPITools/openapi-generator/issues/new
 import RemoteTestToolsClient
 
-let geminiAskPostRequest = _gemini_ask_post_request(prompt: "prompt_example", args: ["args_example"], files: [_gemini_ask_post_request_files_inner(fileName: "fileName_example", data: "data_example")]) // GeminiAskPostRequest |  (optional)
+let geminiAskPostRequest = _gemini_ask_post_request(prompt: "prompt_example", files: [_gemini_ask_post_request_files_inner(fileName: "fileName_example", data: "data_example")]) // GeminiAskPostRequest |  (optional)
 
 GeminiAPI.geminiAskPost(geminiAskPostRequest: geminiAskPostRequest) { (response, error) in
     guard error == nil else {

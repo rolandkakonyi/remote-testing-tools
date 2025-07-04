@@ -19,10 +19,6 @@ const geminiRequestSchema = {
   type: 'object',
   properties: {
     prompt: { type: 'string' },
-    args: {
-      type: 'array',
-      items: { type: 'string' }
-    },
     files: {
       type: 'array',
       items: fileSchema
@@ -67,7 +63,7 @@ export async function geminiRoutes(fastify: FastifyInstance): Promise<void> {
       }
     },
     async (request: FastifyRequest<{ Body: GeminiRequest }>, reply: FastifyReply) => {
-      let { prompt, args = [], files = [] } = request.body;
+      let { prompt, files = [] } = request.body;
 
       if (!prompt || typeof prompt !== 'string' || prompt.trim().length === 0) {
         return reply.status(400).send({ error: 'Prompt is required and must be a non-empty string' });
@@ -91,17 +87,24 @@ export async function geminiRoutes(fastify: FastifyInstance): Promise<void> {
               prompt = `Here are the user provided files for context: ${fileNames}\n\n${prompt}`;
             }
             
-            const geminiArgs = ['--sandbox', prompt, ...args];
+            const geminiArgs = ['--sandbox'];
             
-            const subprocess = execa('gemini', geminiArgs, {
+            // Execute and wait for completion, passing through authentication
+            // Pass prompt via stdin instead of --prompt flag
+            const result = await execa('gemini', geminiArgs, {
+              input: prompt, // Pass prompt via stdin
               timeout: 30000,
               killSignal: 'SIGTERM',
-              cwd: tempDir
+              cwd: tempDir,
+              env: {
+                ...process.env, // Pass through all environment variables including GEMINI_API_KEY
+                PATH: process.env.PATH // Ensure PATH is available for finding gemini binary
+              }
             });
 
-            return subprocess;
+            return result;
           } finally {
-            // Clean up temporary directory
+            // Clean up temporary directory after process completes
             if (tempDir) {
               try {
                 await rm(tempDir, { recursive: true, force: true });
