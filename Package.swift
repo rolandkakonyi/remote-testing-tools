@@ -8,6 +8,6 @@ let package = Package(
         .library(name: "RemoteTestToolsClient", targets: ["RemoteTestToolsClient"]),
     ],
     targets: [
-        .target(name: "RemoteTestToolsClient", path: "modules/swift-client/Sources/OpenAPIs")
+        .target(name: "RemoteTestToolsClient", path: "modules/swift-client/RemoteTestToolsClient/Classes")
     ]
 )
