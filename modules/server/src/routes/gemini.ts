@@ -93,7 +93,7 @@ export async function geminiRoutes(fastify: FastifyInstance): Promise<void> {
                 await writeFile(join(tempDir, file.fileName), decodedData);
               }
               const fileNames = files.map(f => `@${f.fileName}`).join(' ');
-              prompt = `${prompt} ${fileNames}`;
+              prompt = `Here are the user provided files for context: ${fileNames}\n\n${prompt}`;
             }
             
             const geminiArgs = ['--sandbox'];

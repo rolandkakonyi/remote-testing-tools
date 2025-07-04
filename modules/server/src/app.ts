@@ -33,7 +33,7 @@ export async function buildApp(config: ServerConfig): Promise<FastifyInstance> {
                 destination: join(logsDir, 'app.log')
               }
             },
-            // Pretty console output in development
+            // Pretty console output in development, basic console output otherwise
             ...(isDevelopment ? [{
               target: 'pino-pretty',
               options: {
@@ -41,7 +41,10 @@ export async function buildApp(config: ServerConfig): Promise<FastifyInstance> {
                 translateTime: 'HH:MM:ss Z',
                 ignore: 'pid,hostname'
               }
-            }] : [])
+            }] : [{
+              target: 'pino/file', // Direct to stdout
+              options: { destination: 1 }
+            }])
           ]
         }
       };
