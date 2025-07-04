@@ -79,7 +79,7 @@ describe('Gemini Routes', () => {
         exitCode: 0
       });
 
-      expect(mockedExeca).toHaveBeenCalledWith('gemini', ['Hello world'], {
+      expect(mockedExeca).toHaveBeenCalledWith('gemini', ['--sandbox', 'Hello world'], {
         timeout: 30000,
         killSignal: 'SIGTERM',
         cwd: '/tmp/gemini-abc123'
@@ -112,7 +112,7 @@ describe('Gemini Routes', () => {
         exitCode: 0
       });
 
-      expect(mockedExeca).toHaveBeenCalledWith('gemini', ['Hello world', '--verbose', '--format=json'], {
+      expect(mockedExeca).toHaveBeenCalledWith('gemini', ['--sandbox', 'Hello world', '--verbose', '--format=json'], {
         timeout: 30000,
         killSignal: 'SIGTERM',
         cwd: '/tmp/gemini-abc123'
@@ -199,7 +199,7 @@ describe('Gemini Routes', () => {
         exitCode: 0
       });
 
-      expect(mockedExeca).toHaveBeenCalledWith('gemini', ['123'], {
+      expect(mockedExeca).toHaveBeenCalledWith('gemini', ['--sandbox', '123'], {
         timeout: 30000,
         killSignal: 'SIGTERM',
         cwd: '/tmp/gemini-abc123'
@@ -329,7 +329,7 @@ describe('Gemini Routes', () => {
       expect(mockedTmpdir).toHaveBeenCalled();
       expect(mockedJoin).toHaveBeenCalledWith('/custom/tmp', 'gemini-');
       expect(mockedMkdtemp).toHaveBeenCalledWith('/custom/tmp/gemini-');
-      expect(mockedExeca).toHaveBeenCalledWith('gemini', ['Hello world'], {
+      expect(mockedExeca).toHaveBeenCalledWith('gemini', ['--sandbox', 'Hello world'], {
         timeout: 30000,
         killSignal: 'SIGTERM',
         cwd: '/custom/tmp/gemini-xyz999'

@@ -68,7 +68,7 @@ export async function geminiRoutes(fastify: FastifyInstance): Promise<void> {
             // Create a new temporary directory for this request
             tempDir = await mkdtemp(join(tmpdir(), 'gemini-'));
             
-            const geminiArgs = [prompt, ...args];
+            const geminiArgs = ['--sandbox', prompt, ...args];
             
             const subprocess = execa('gemini', geminiArgs, {
               timeout: 30000,
