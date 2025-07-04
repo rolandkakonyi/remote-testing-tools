@@ -185,6 +185,33 @@ console.log(fibonacci(10));
       expect(response.body.output).toContain('Code analysis finished');
       expect(response.body.output.toLowerCase()).toContain('fibonacci');
     });
+
+    it.skipIf(skipCondition)('should validate files are accessible in temp working directory', async () => {
+      // Create a test file that validates directory listing and file access
+      const testContent = 'VALIDATION_SUCCESS: Files are accessible in temp directory';
+      const base64Content = Buffer.from(testContent).toString('base64');
+      
+      const response = await request(app.server)
+        .post('/gemini/ask')
+        .send({
+          prompt: 'I need you to verify that the uploaded file is accessible in your current working directory. Please: 1) List the files in the current directory, 2) Read the content of validation.txt, 3) Confirm the exact content matches "VALIDATION_SUCCESS: Files are accessible in temp directory". End your response with "TEMP_DIR_VALIDATION_COMPLETE".',
+          files: [
+            {
+              fileName: 'validation.txt',
+              data: base64Content
+            }
+          ]
+        })
+        .timeout(60000);
+
+      expect(response.status).toBe(200);
+      expect(response.body).toHaveProperty('output');
+      expect(response.body).toHaveProperty('exitCode');
+      expect(response.body.exitCode).toBe(0);
+      expect(response.body.output).toContain('TEMP_DIR_VALIDATION_COMPLETE');
+      expect(response.body.output).toContain('validation.txt');
+      expect(response.body.output).toContain('VALIDATION_SUCCESS: Files are accessible in temp directory');
+    });
   });
 
   describe('Error Handling in Real Environment', () => {

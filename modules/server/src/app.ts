@@ -48,7 +48,7 @@ export async function buildApp(config: ServerConfig): Promise<FastifyInstance> {
 
   const fastify = Fastify({
     logger: loggerConfig,
-    bodyLimit: 1048576, // 1MB
+    bodyLimit: 52428800, // 50MB
     ajv: {
       customOptions: {
         allErrors: true
