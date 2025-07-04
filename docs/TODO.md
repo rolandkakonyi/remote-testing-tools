@@ -25,5 +25,14 @@ The Remote Testing Tools project is now feature-complete with:
 - ✅ **Authentication Fix**: Proper environment variable passthrough for API keys
 - ✅ **Bug Fixes**: Resolved temporary directory cleanup and argument passing issues
 - ✅ **Documentation**: Comprehensive E2E testing guide and troubleshooting
+- ✅ **Comprehensive Logging**: File-based logging system with structured JSON format for debugging
 
-The project now includes both automated testing (CI-friendly) and manual E2E verification for complete confidence in real-world functionality!
+**Latest Addition:**
+- ✅ **File-Based Logging System**: Added comprehensive logging to `modules/server/logs/app.log` with:
+  - Structured JSON logs with environment-aware formatting
+  - Detailed Gemini CLI interaction logging (prompts, responses, execution time)
+  - HTTP request/response logging with performance metrics
+  - Easy log viewing with `yarn logs` command (supports custom line counts)
+  - Real-time log monitoring capabilities
+
+The project now includes both automated testing (CI-friendly) and manual E2E verification for complete confidence in real-world functionality, plus comprehensive debugging capabilities through structured logging!

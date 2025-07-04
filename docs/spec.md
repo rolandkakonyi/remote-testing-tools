@@ -31,6 +31,7 @@ The server's design is guided by the following principles:
 *   **Web Framework:** Fastify
 *   **Process Execution:** `execa`
 *   **Concurrency:** `p-queue`
+*   **Logging:** Pino logger with structured JSON logs and file output
 *   **Configuration:** `dotenv` and Node.js `util.parseArgs`
 *   **API Client Generation:** **`@openapitools/openapi-generator-cli`**. This will be included as a `devDependency` in `package.json` and executed via `npx` to avoid reliance on global installations.
 
@@ -134,6 +135,34 @@ The server does not include authentication, authorization, or other security mea
 
 *   **Prerequisite Check:** On startup, the server will check that the `gemini` CLI is installed and executable (`gemini --version`). If not, it will fail to start with a clear error message.
 *   **Orphaned Directory Cleanup:** On startup, the server will perform a one-time cleanup of any temporary directories left over from previous crashed runs to prevent disk clutter.
+*   **Comprehensive Logging:** The server includes file-based logging with structured JSON format for debugging purposes. All HTTP requests, Gemini CLI interactions, and system events are logged to `modules/server/logs/app.log`.
+
+### 6.1. Debugging and Log Management
+
+The server provides comprehensive logging capabilities for troubleshooting and monitoring:
+
+**Log Features:**
+- **File Location:** `modules/server/logs/app.log`
+- **Format:** Structured JSON logs with environment-specific formatting
+- **Content:** HTTP requests/responses, Gemini CLI interactions (prompts, responses, execution time), server lifecycle events, and error details
+- **Environment-Aware:** Pretty-formatted console output in development, file-only in production, disabled in test mode
+
+**Log Viewing Commands:**
+```bash
+# View last 20 lines (default)
+yarn logs
+
+# View custom number of lines
+LINES=50 yarn logs
+
+# Monitor logs in real-time
+cd modules/server && tail -f logs/app.log | npx pino-pretty
+```
+
+**Log Structure Examples:**
+- Request logging includes method, URL, headers, and response times
+- Gemini CLI interactions include full prompts (truncated for privacy), responses, exit codes, and execution duration
+- Error logging includes stack traces and context information
 
 ## 7. Swift Client
 

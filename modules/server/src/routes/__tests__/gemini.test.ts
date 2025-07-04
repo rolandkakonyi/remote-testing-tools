@@ -54,7 +54,8 @@ describe('Gemini Route Handler (Unit Tests)', () => {
       post: vi.fn(),
       log: {
         error: vi.fn(),
-        warn: vi.fn()
+        warn: vi.fn(),
+        info: vi.fn()
       }
     } as any;
 

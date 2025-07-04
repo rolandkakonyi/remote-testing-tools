@@ -4,10 +4,50 @@ import fastifySwaggerUi from '@fastify/swagger-ui';
 import fastifyCors from '@fastify/cors';
 import { geminiRoutes } from './routes/gemini.js';
 import type { ServerConfig } from './types/index.js';
+import { mkdir } from 'fs/promises';
+import { join } from 'path';
 
 export async function buildApp(config: ServerConfig): Promise<FastifyInstance> {
+  // Ensure logs directory exists
+  const logsDir = join(process.cwd(), 'logs');
+  try {
+    await mkdir(logsDir, { recursive: true });
+  } catch (error) {
+    // Directory might already exist, ignore error
+  }
+
+  // Configure logging based on environment
+  const isDevelopment = process.env.NODE_ENV === 'development';
+  const isTest = process.env.NODE_ENV === 'test';
+  
+  const loggerConfig = isTest 
+    ? false 
+    : {
+        level: 'info',
+        transport: {
+          targets: [
+            // File logging for all environments except test
+            {
+              target: 'pino/file',
+              options: {
+                destination: join(logsDir, 'app.log')
+              }
+            },
+            // Pretty console output in development
+            ...(isDevelopment ? [{
+              target: 'pino-pretty',
+              options: {
+                colorize: true,
+                translateTime: 'HH:MM:ss Z',
+                ignore: 'pid,hostname'
+              }
+            }] : [])
+          ]
+        }
+      };
+
   const fastify = Fastify({
-    logger: true,
+    logger: loggerConfig,
     bodyLimit: 1048576, // 1MB
     ajv: {
       customOptions: {

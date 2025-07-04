@@ -11,6 +11,7 @@ A lightweight, extensible server designed to run on a local machine or within a 
 - **Swift Client**: Auto-generated Swift Package Manager compatible client
 - **File Attachments**: Support for sending files as Base64-encoded context
 - **Sandbox Execution**: Enhanced security with isolated temporary directories
+- **Comprehensive Logging**: File-based logging for debugging with structured JSON logs
 
 ## Quick Start
 
@@ -117,6 +118,12 @@ yarn build
 
 # Generate Swift client
 yarn generate:swift-client
+
+# View server logs (last 20 lines)
+yarn logs
+
+# View custom number of log lines
+LINES=50 yarn logs
 ```
 
 ### Project Structure
@@ -213,6 +220,27 @@ The server can be configured via command line arguments or environment variables
 - `--host, -h` or `HOST`: Server host (default: 127.0.0.1)
 - `--max-concurrent` or `MAX_CONCURRENT_REQUESTS`: Max concurrent requests (default: 5)
 - `--request-timeout` or `REQUEST_TIMEOUT`: Request timeout in ms (default: 30000)
+
+## Debugging and Logs
+
+The server includes comprehensive logging for debugging purposes:
+
+- **Log Location**: `modules/server/logs/app.log`
+- **Log Format**: Structured JSON logs with pretty-formatted console output in development
+- **Log Content**: HTTP requests/responses, Gemini CLI interactions, server events, and errors
+
+### Viewing Logs
+
+```bash
+# View last 20 lines (default)
+yarn logs
+
+# View custom number of lines
+LINES=100 yarn logs
+
+# Monitor logs in real-time
+cd modules/server && tail -f logs/app.log | npx pino-pretty
+```
 
 ## Security
 

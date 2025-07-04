@@ -12,6 +12,7 @@
     "lint": "yarn workspaces foreach -A run lint",
     "dev": "yarn workspace server dev",
     "start": "yarn workspace server start",
+    "logs": "yarn workspace server logs",
     "generate:swift-client": "yarn workspace server openapi:generate && npx @openapitools/openapi-generator-cli generate -i modules/server/openapi.json -g swift5 -o modules/swift-client --additional-properties=projectName=RemoteTestToolsClient,responseAs=Async,swiftVersion=5.10",
     "prepare": "husky",
     "validate:swift-client": "yarn generate:swift-client && git diff --exit-code modules/swift-client/ modules/server/openapi.json"

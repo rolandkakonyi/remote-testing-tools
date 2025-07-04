@@ -1,0 +1,8 @@
+{"level":30,"time":1751623451290,"pid":59878,"hostname":"Rolands-MacBook-M2-Pro.local","msg":"Server listening at http://127.0.0.1:3000"}
+{"level":30,"time":1751623452367,"pid":59878,"hostname":"Rolands-MacBook-M2-Pro.local","reqId":"req-1","req":{"method":"GET","url":"/health","hostname":"localhost:3000","remoteAddress":"127.0.0.1","remotePort":55237},"msg":"incoming request"}
+{"level":30,"time":1751623452372,"pid":59878,"hostname":"Rolands-MacBook-M2-Pro.local","reqId":"req-1","res":{"statusCode":200},"responseTime":4.471500009298325,"msg":"request completed"}
+{"level":30,"time":1751623472977,"pid":60253,"hostname":"Rolands-MacBook-M2-Pro.local","msg":"Server listening at http://127.0.0.1:3000"}
+{"level":30,"time":1751623475512,"pid":60253,"hostname":"Rolands-MacBook-M2-Pro.local","reqId":"req-1","req":{"method":"POST","url":"/gemini/ask","hostname":"localhost:3000","remoteAddress":"127.0.0.1","remotePort":55292},"msg":"incoming request"}
+{"level":30,"time":1751623475514,"pid":60253,"hostname":"Rolands-MacBook-M2-Pro.local","type":"gemini_request_start","prompt":"What is 2+2?","fileCount":0,"files":[],"msg":"Gemini CLI request started"}
+{"level":30,"time":1751623479793,"pid":60253,"hostname":"Rolands-MacBook-M2-Pro.local","type":"gemini_cli_response","prompt":"What is 2+2?","files":[],"exitCode":0,"stdout":"4","stderr":"using macos seatbelt (profile: permissive-open) ...","duration":4278,"msg":"Gemini CLI executed successfully"}
+{"level":30,"time":1751623479797,"pid":60253,"hostname":"Rolands-MacBook-M2-Pro.local","reqId":"req-1","res":{"statusCode":200},"responseTime":4285.709667012095,"msg":"request completed"}

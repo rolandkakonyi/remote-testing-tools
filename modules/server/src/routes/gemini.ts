@@ -69,9 +69,18 @@ export async function geminiRoutes(fastify: FastifyInstance): Promise<void> {
         return reply.status(400).send({ error: 'Prompt is required and must be a non-empty string' });
       }
 
+      // Log request start
+      fastify.log.info({
+        type: 'gemini_request_start',
+        prompt: prompt.substring(0, 200) + (prompt.length > 200 ? '...' : ''),
+        fileCount: files?.length || 0,
+        files: files?.map(f => f.fileName) || []
+      }, 'Gemini CLI request started');
+
       try {
         const result = await defaultQueue.add(async () => {
           let tempDir: string | undefined;
+          const startTime = Date.now();
           
           try {
             // Create a new temporary directory for this request
@@ -101,6 +110,19 @@ export async function geminiRoutes(fastify: FastifyInstance): Promise<void> {
                 PATH: process.env.PATH // Ensure PATH is available for finding gemini binary
               }
             });
+
+            const duration = Date.now() - startTime;
+
+            // Log the raw Gemini CLI interaction for debugging
+            fastify.log.info({
+              type: 'gemini_cli_response',
+              prompt: prompt.substring(0, 200) + (prompt.length > 200 ? '...' : ''),
+              files: files?.map(f => f.fileName) || [],
+              exitCode: result.exitCode,
+              stdout: result.stdout,
+              stderr: result.stderr,
+              duration: duration
+            }, 'Gemini CLI executed successfully');
 
             return result;
           } finally {

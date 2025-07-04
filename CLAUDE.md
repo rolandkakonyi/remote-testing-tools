@@ -31,6 +31,12 @@ yarn test
 
 # Run linting across all workspaces
 yarn lint
+
+# View server logs (last 20 lines by default)
+yarn logs
+
+# View custom number of log lines
+LINES=50 yarn logs
 ```
 
 ### Server-specific (from modules/server/)
@@ -52,6 +58,12 @@ yarn lint
 
 # Generate OpenAPI spec
 yarn openapi:generate
+
+# View server logs (last 20 lines by default)
+yarn logs
+
+# View custom number of log lines
+LINES=50 yarn logs
 ```
 
 ### Testing Strategy
@@ -95,6 +107,7 @@ git commit --amend --no-edit
 - **Server**: Node.js 18+, TypeScript, Fastify, Vitest
 - **Process Execution**: `execa` for running CLI commands
 - **Concurrency**: `p-queue` for request management
+- **Logging**: Pino logger with file output and structured JSON logs
 - **Client Generation**: OpenAPI Generator for Swift client
 - **Testing**: Vitest for unit/integration tests, Supertest for HTTP assertions
 
@@ -116,6 +129,31 @@ git commit --amend --no-edit
 4. **Build**: `yarn build` - Verify the project builds successfully
 
 This workflow ensures code quality and prevents issues from being introduced into the codebase.
+
+## Debugging and Logs
+
+The server includes comprehensive file-based logging for debugging purposes:
+
+- **Log Location**: `modules/server/logs/app.log`
+- **Log Format**: Structured JSON with pretty-formatted console output in development
+- **Log Content**: 
+  - HTTP requests and responses
+  - Gemini CLI interactions (prompts, responses, execution time)
+  - Server startup/shutdown events
+  - Error details and stack traces
+
+### Viewing Logs
+
+```bash
+# View last 20 lines (default)
+yarn logs
+
+# View custom number of lines
+LINES=100 yarn logs
+
+# Monitor logs in real-time (from logs directory)
+tail -f logs/app.log | npx pino-pretty
+```
 
 ## Configuration
 
