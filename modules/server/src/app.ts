@@ -9,7 +9,7 @@ import { join } from 'path';
 
 export async function buildApp(config: ServerConfig): Promise<FastifyInstance> {
   // Ensure logs directory exists
-  const logsDir = join(process.cwd(), 'logs');
+  const logsDir = join(process.cwd(), '.logs');
   try {
     await mkdir(logsDir, { recursive: true });
   } catch (error) {

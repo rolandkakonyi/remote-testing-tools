@@ -88,3 +88,6 @@ Package.resolved
 *.xcworkspace
 *.xcuserdata
 *.xcscheme
+
+# Log files
+modules/server/.logs
