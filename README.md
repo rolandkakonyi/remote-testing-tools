@@ -9,6 +9,8 @@ A lightweight, extensible server designed to run on a local machine or within a 
 - **Extensible Architecture**: Simple framework for adding new actions over time
 - **TypeScript & Fastify**: Modern, fast, and type-safe implementation
 - **Swift Client**: Auto-generated Swift Package Manager compatible client
+- **File Attachments**: Support for sending files as Base64-encoded context
+- **Sandbox Execution**: Enhanced security with isolated temporary directories
 
 ## Quick Start
 
@@ -32,9 +34,23 @@ The server provides a REST API with OpenAPI documentation available at `/docs`.
 #### Ask Gemini
 
 ```bash
+# Simple text prompt
 curl -X POST http://localhost:3000/gemini/ask \
   -H "Content-Type: application/json" \
   -d '{"prompt": "What is the capital of France?"}'
+
+# With file attachments
+curl -X POST http://localhost:3000/gemini/ask \
+  -H "Content-Type: application/json" \
+  -d '{
+    "prompt": "Analyze this image",
+    "files": [
+      {
+        "fileName": "chart.png",
+        "data": "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8/5+hHgAHggJ/PchI7wAAAABJRU5ErkJggg=="
+      }
+    ]
+  }'
 ```
 
 ### Swift Client
@@ -53,7 +69,21 @@ Then import and use:
 import RemoteTestToolsClient
 
 let client = RemoteTestToolsClient(basePath: "http://localhost:3000")
+
+// Simple text prompt
 let response = try await client.askGemini(prompt: "Hello world")
+
+// With file attachments
+let imageData = Data(/* your image data */)
+let fileAttachment = GeminiAskPostRequestFilesInner(
+    fileName: "image.png", 
+    data: imageData.base64EncodedString()
+)
+let request = GeminiAskPostRequest(
+    prompt: "Analyze this image",
+    files: [fileAttachment]
+)
+let response = try await client.geminiAskPost(geminiAskPostRequest: request)
 ```
 
 ## Development
@@ -89,10 +119,11 @@ yarn generate:swift-client
 ### Project Structure
 
 ```
-├── packages/
+├── modules/
 │   ├── server/          # Node.js API server
 │   └── swift-client/    # Generated Swift client
 ├── .github/workflows/   # CI/CD workflows
+├── docs/                # Project documentation
 └── Package.swift        # Swift Package Manager manifest
 ```
 
@@ -102,7 +133,31 @@ yarn generate:swift-client
 - `GET /health` - Server health status
 
 ### Gemini Integration
-- `POST /gemini/ask` - Execute Gemini CLI commands
+- `POST /gemini/ask` - Execute Gemini CLI commands with optional file attachments
+
+#### Request Body
+```json
+{
+  "prompt": "string (required)",
+  "args": ["string"] (optional),
+  "files": [
+    {
+      "fileName": "string (required)",
+      "data": "string (required, base64 encoded)"
+    }
+  ] (optional)
+}
+```
+
+#### Response
+```json
+{
+  "output": "string",
+  "exitCode": "number",
+  "stderr": "string", // optional
+  "error": "string"   // optional, present if execution failed
+}
+```
 
 ## Configuration
 

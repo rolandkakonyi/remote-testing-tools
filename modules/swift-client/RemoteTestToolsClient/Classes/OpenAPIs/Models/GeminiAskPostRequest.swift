@@ -14,15 +14,18 @@ public struct GeminiAskPostRequest: Codable, JSONEncodable, Hashable {
 
     public var prompt: String?
     public var args: [String]?
+    public var files: [GeminiAskPostRequestFilesInner]?
 
-    public init(prompt: String? = nil, args: [String]? = nil) {
+    public init(prompt: String? = nil, args: [String]? = nil, files: [GeminiAskPostRequestFilesInner]? = nil) {
         self.prompt = prompt
         self.args = args
+        self.files = files
     }
 
     public enum CodingKeys: String, CodingKey, CaseIterable {
         case prompt
         case args
+        case files
     }
 
     // Encodable protocol methods
@@ -31,6 +34,7 @@ public struct GeminiAskPostRequest: Codable, JSONEncodable, Hashable {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encodeIfPresent(prompt, forKey: .prompt)
         try container.encodeIfPresent(args, forKey: .args)
+        try container.encodeIfPresent(files, forKey: .files)
     }
 }
 

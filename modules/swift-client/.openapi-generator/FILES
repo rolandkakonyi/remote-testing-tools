@@ -17,6 +17,7 @@ RemoteTestToolsClient/Classes/OpenAPIs/Models.swift
 RemoteTestToolsClient/Classes/OpenAPIs/Models/GeminiAskPost200Response.swift
 RemoteTestToolsClient/Classes/OpenAPIs/Models/GeminiAskPost400Response.swift
 RemoteTestToolsClient/Classes/OpenAPIs/Models/GeminiAskPostRequest.swift
+RemoteTestToolsClient/Classes/OpenAPIs/Models/GeminiAskPostRequestFilesInner.swift
 RemoteTestToolsClient/Classes/OpenAPIs/Models/HealthGet200Response.swift
 RemoteTestToolsClient/Classes/OpenAPIs/OpenISO8601DateFormatter.swift
 RemoteTestToolsClient/Classes/OpenAPIs/SynchronizedDictionary.swift
@@ -26,6 +27,7 @@ docs/GeminiAPI.md
 docs/GeminiAskPost200Response.md
 docs/GeminiAskPost400Response.md
 docs/GeminiAskPostRequest.md
+docs/GeminiAskPostRequestFilesInner.md
 docs/HealthAPI.md
 docs/HealthGet200Response.md
 git_push.sh

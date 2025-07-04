@@ -1,8 +1,8 @@
 # Software Development Document: Remote Testing Tools
 
-**Version:** 5.7
+**Version:** 5.8
 **Date:** July 4, 2025
-**Status:** Final
+**Status:** In Progress
 
 ## 1. Overview and Project Philosophy
 
@@ -19,6 +19,7 @@ The server's design is guided by the following principles:
 *   **FR1:** A local web server providing a JSON API, executable via `npx` from a GitHub repository.
 *   **FR2:** The initial API endpoint will be `POST /gemini/ask` to interact with the `gemini` CLI.
 *   **FR3:** The server architecture must be modular to easily accommodate new endpoints for other local actions in the future.
+*   **FR4 (v5.8):** The `/gemini/ask` endpoint must support file attachments to be used as context for the prompt.
 *   **NFR1:** Tech Stack: TypeScript and Yarn.
 *   **NFR2:** A generatable Swift 5.10+ client package must be provided, consumable via Swift Package Manager (SPM).
 *   **NFR3:** The project must have a comprehensive automated testing strategy.
@@ -44,21 +45,32 @@ To ensure code quality and reliability, the project will use a specific set of t
 
 ### 3.3. Extensibility
 The server is designed to be a framework for actions. Adding a new action (e.g., `run-ffmpeg`) will follow a simple pattern:
-1.  Create a new route file in `packages/server/src/routes/ffmpeg.ts`.
+1.  Create a new route file in `modules/server/src/routes/ffmpeg.ts`.
 2.  Implement the route handler logic.
 3.  Register the new route with the Fastify instance.
 4.  Regenerate the Swift client to automatically include the new API method.
 
 ## 4. API Design
 
-### 4.1. Security Enhancements (v5.7)
+### 4.1. File Attachment Handling (v5.8)
+
+To allow users to provide files as context for their prompts (e.g., asking questions about an image), the API supports file attachments.
+
+*   **Transfer Method:** Files are sent within the JSON payload. Each file is an object containing its name and its data encoded as a **Base64 string**.
+*   **Server-Side Handling:**
+    1.  The server receives the request and decodes the Base64 data for each file.
+    2.  Each file is written to the per-request isolated temporary directory.
+    3.  The user's prompt is automatically prepended with a message listing the attached files (e.g., `Here are the user provided files for context: @image.png @data.csv`).
+*   **Rationale:** This approach avoids the complexity of `multipart/form-data` and keeps the API contract as a single `application/json` endpoint, simplifying both the server implementation and client generation. The overhead of Base64 encoding is acceptable for the intended use case of providing context files to a CLI tool.
+
+### 4.2. Security Enhancements (v5.7)
 
 The Gemini CLI execution has been enhanced with two key security improvements:
 
 1. **Sandbox Execution**: All Gemini CLI commands now run with the `--sandbox` flag for additional isolation and security.
 2. **Isolated Temporary Directories**: Each request creates its own temporary directory using `mkdtemp()`, ensuring complete isolation between concurrent requests.
 
-### 4.2. Gemini API Endpoint
+### 4.3. Gemini API Endpoint
 
 **POST /gemini/ask**
 
@@ -68,7 +80,13 @@ This endpoint executes a Gemini CLI command with the provided prompt and optiona
 ```json
 {
   "prompt": "string (required)",
-  "args": ["string"] // optional array of additional arguments
+  "args": ["string"],
+  "files": [
+    {
+      "fileName": "string (required)",
+      "data": "string (required, base64 encoded)"
+    }
+  ]
 }
 ```
 
@@ -130,19 +148,19 @@ The Swift client generation process and usage pattern remain a key feature.
 The generation of the Swift client will be fully automated and non-interactive, driven by a `yarn` script.
 
 1.  **OpenAPI Spec Generation:** A dedicated script (`yarn server openapi:generate`) will start the Fastify app instance in memory, generate the `openapi.json` specification file, and exit without listening for requests.
-2.  **Client Code Generation:** The `openapi-generator-cli` will be invoked via `npx` to read the `openapi.json` file and write the generated Swift source files to the `packages/swift-client` directory.
+2.  **Client Code Generation:** The `openapi-generator-cli` will be invoked via `npx` to read the `openapi.json` file and write the generated Swift source files to the `modules/swift-client` directory.
 
 This entire process will be encapsulated in a single command in the root `package.json`:
 
 ```json
 "scripts": {
-  "generate:swift-client": "yarn workspace server openapi:generate && npx @openapitools/openapi-generator-cli generate -i openapi.json -g swift5 -o packages/swift-client --additional-properties=projectName=RemoteTestToolsClient,responseAs=Async,swiftVersion=5.10"
+  "generate:swift-client": "yarn workspace server openapi:generate && npx @openapitools/openapi-generator-cli generate -i modules/server/openapi.json -g swift5 -o modules/swift-client --additional-properties=projectName=RemoteTestToolsClient,responseAs=Async,swiftVersion=5.10"
 }
 ```
 
 ### 7.2. Swift Package Manager (SPM) Consumption Strategy
 
-To make the Swift client usable via SPM directly from the monorepo's Git URL, a proxy `Package.swift` file must be placed at the **root of the repository**. This file will point to the actual source code located in `packages/swift-client`. Swift Package Manager requires the manifest file to be at the root, and this "shim" approach satisfies that requirement while keeping the code organized in a subdirectory.
+To make the Swift client usable via SPM directly from the monorepo's Git URL, a proxy `Package.swift` file must be placed at the **root of the repository**. This file will point to the actual source code located in `modules/swift-client`. Swift Package Manager requires the manifest file to be at the root, and this "shim" approach satisfies that requirement while keeping the code organized in a subdirectory.
 
 **Root `Package.swift` File:**
 
@@ -157,7 +175,7 @@ let package = Package(
         .library(name: "RemoteTestToolsClient", targets: ["RemoteTestToolsClient"]),
     ],
     targets: [
-        .target(name: "RemoteTestToolsClient", path: "packages/swift-client/Sources/OpenAPIs")
+        .target(name: "RemoteTestToolsClient", path: "modules/swift-client/Sources/OpenAPIs")
     ]
 )
 ```
@@ -169,12 +187,12 @@ A multi-layered automated testing strategy is a core part of this project's deve
 ### 8.1. Level 1: Unit Tests
 
 *   **Scope:** These tests will focus on individual functions and route handlers in complete isolation. All external dependencies, such as the filesystem (`fs`) and process execution (`execa`), will be mocked using **Vitest's** built-in mocking capabilities.
-*   **Location:** `packages/server/src/**/*.test.ts`
+*   **Location:** `modules/server/src/**/*.test.ts`
 
 ### 8.2. Level 2: Integration Tests
 
 *   **Scope:** These tests will verify the interaction between different parts of the server. The server will be run in-memory, and **Supertest** will be used to make HTTP requests to it. `execa` will still be mocked by **Vitest**.
-*   **Location:** `packages/server/test/integration/**/*.test.ts`
+*   **Location:** `modules/server/test/integration/**/*.test.ts`
 
 ### 8.3. Level 3: Swift Client Build Verification
 

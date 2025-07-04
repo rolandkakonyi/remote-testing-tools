@@ -32,7 +32,7 @@ open class GeminiAPI {
 
     /**
      - POST /gemini/ask
-     - Execute a Gemini CLI command with the provided prompt
+     - Execute a Gemini CLI command with the provided prompt and optional file attachments.
      - parameter geminiAskPostRequest: (body)  (optional)
      - returns: RequestBuilder<GeminiAskPost200Response> 
      */

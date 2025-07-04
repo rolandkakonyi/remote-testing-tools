@@ -8,9 +8,9 @@ This is a TypeScript monorepo containing Remote Testing Tools server and Swift c
 
 ## Architecture
 
-- **Yarn 4 Workspaces**: Root manages two packages via workspaces
-- **packages/server/**: Node.js TypeScript server using Fastify
-- **packages/swift-client/**: Auto-generated Swift Package Manager client
+- **Yarn 4 Workspaces**: Root manages two modules via workspaces
+- **modules/server/**: Node.js TypeScript server using Fastify
+- **modules/swift-client/**: Auto-generated Swift Package Manager client
 - **Root Package.swift**: Proxy manifest for SPM consumption from Git URL
 
 ## Key Commands
@@ -33,7 +33,7 @@ yarn test
 yarn lint
 ```
 
-### Server-specific (from packages/server/)
+### Server-specific (from modules/server/)
 ```bash
 # Run server tests with Vitest (non-interactive)
 yarn test
@@ -64,19 +64,19 @@ yarn validate:swift-client
 ```
 
 #### How it works:
-1. **Pre-commit Hook**: When you commit changes to `packages/server/src/`, the Swift client is automatically regenerated and staged
+1. **Pre-commit Hook**: When you commit changes to `modules/server/src/`, the Swift client is automatically regenerated and staged
 2. **CI Validation**: GitHub Actions verifies the Swift client is up-to-date and fails if not
 3. **Manual Generation**: You can still run `yarn generate:swift-client` manually when needed
 
 #### Process:
 1. Generates OpenAPI spec from server using Fastify's swagger plugin
 2. Uses `@openapitools/openapi-generator-cli` to create Swift 5.10 client
-3. Outputs to `packages/swift-client/Sources/OpenAPIs/`
+3. Outputs to `modules/swift-client/Sources/OpenAPIs/`
 
 #### If CI fails with "Swift client out of sync":
 ```bash
 yarn generate:swift-client
-git add packages/swift-client/ packages/server/openapi.json
+git add modules/swift-client/ modules/server/openapi.json
 git commit --amend --no-edit
 ```
 

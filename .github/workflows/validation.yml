@@ -69,7 +69,7 @@ jobs:
       - name: Validate Swift Client is Up-to-Date
         if: runner.os == 'macOS'
         run: |
-          if ! git diff --exit-code packages/swift-client/ packages/server/openapi.json; then
+          if ! git diff --exit-code modules/swift-client/ modules/server/openapi.json; then
             echo "❌ Swift client is out of sync with server API!"
             echo "Please run 'yarn generate:swift-client' and commit the changes."
             exit 1
@@ -78,5 +78,4 @@ jobs:
 
       - name: Verify Swift Client Build
         if: runner.os == 'macOS'
-        working-directory: packages/swift-client
         run: swift build

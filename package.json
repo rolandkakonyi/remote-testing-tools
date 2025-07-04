@@ -4,7 +4,7 @@
   "private": true,
   "description": "Remote Testing Tools - A lightweight, extensible server for triggering local command-line actions in test automation",
   "workspaces": [
-    "packages/*"
+    "modules/*"
   ],
   "scripts": {
     "build": "yarn workspaces foreach -A run build",
@@ -12,9 +12,9 @@
     "lint": "yarn workspaces foreach -A run lint",
     "dev": "yarn workspace server dev",
     "start": "yarn workspace server start",
-    "generate:swift-client": "yarn workspace server openapi:generate && npx @openapitools/openapi-generator-cli generate -i packages/server/openapi.json -g swift5 -o packages/swift-client --additional-properties=projectName=RemoteTestToolsClient,responseAs=Async,swiftVersion=5.10",
+    "generate:swift-client": "yarn workspace server openapi:generate && npx @openapitools/openapi-generator-cli generate -i modules/server/openapi.json -g swift5 -o modules/swift-client --additional-properties=projectName=RemoteTestToolsClient,responseAs=Async,swiftVersion=5.10",
     "prepare": "husky",
-    "validate:swift-client": "yarn generate:swift-client && git diff --exit-code packages/swift-client/ packages/server/openapi.json"
+    "validate:swift-client": "yarn generate:swift-client && git diff --exit-code modules/swift-client/ modules/server/openapi.json"
   },
   "devDependencies": {
     "@openapitools/openapi-generator-cli": "^2.13.7",
@@ -26,9 +26,9 @@
   },
   "packageManager": "yarn@4.0.0",
   "lint-staged": {
-    "packages/server/src/**/*.{ts,js}": [
+    "modules/server/src/**/*.{ts,js}": [
       "bash -c 'yarn generate:swift-client'",
-      "git add -f packages/swift-client/ packages/server/openapi.json"
+      "git add -f modules/swift-client/ modules/server/openapi.json"
     ]
   }
 }

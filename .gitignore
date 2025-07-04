@@ -68,7 +68,6 @@ jspm_packages/
 .eslintcache
 
 # Generated files
-openapi.json
 openapitools.json
 
 # OS generated files

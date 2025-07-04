@@ -35,6 +35,7 @@ Class | Method | HTTP request | Description
  - [GeminiAskPost200Response](docs/GeminiAskPost200Response.md)
  - [GeminiAskPost400Response](docs/GeminiAskPost400Response.md)
  - [GeminiAskPostRequest](docs/GeminiAskPostRequest.md)
+ - [GeminiAskPostRequestFilesInner](docs/GeminiAskPostRequestFilesInner.md)
  - [HealthGet200Response](docs/HealthGet200Response.md)
 
 

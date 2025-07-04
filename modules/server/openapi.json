@@ -45,7 +45,7 @@
         "tags": [
           "gemini"
         ],
-        "description": "Execute a Gemini CLI command with the provided prompt",
+        "description": "Execute a Gemini CLI command with the provided prompt and optional file attachments.",
         "requestBody": {
           "content": {
             "application/json": {
@@ -59,6 +59,24 @@
                     "type": "array",
                     "items": {
                       "type": "string"
+                    }
+                  },
+                  "files": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "fileName": {
+                          "type": "string"
+                        },
+                        "data": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "fileName",
+                        "data"
+                      ]
                     }
                   }
                 }

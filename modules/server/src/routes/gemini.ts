@@ -1,10 +1,19 @@
 import { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
 import { execa } from 'execa';
-import { mkdtemp, rm } from 'fs/promises';
+import { mkdtemp, rm, writeFile } from 'fs/promises';
 import { tmpdir } from 'os';
 import { join } from 'path';
 import { defaultQueue } from '../lib/queue.js';
 import type { GeminiRequest, GeminiResponse } from '../types/index.js';
+
+const fileSchema = {
+  type: 'object',
+  properties: {
+    fileName: { type: 'string' },
+    data: { type: 'string' }
+  },
+  required: ['fileName', 'data']
+} as const;
 
 const geminiRequestSchema = {
   type: 'object',
@@ -13,6 +22,10 @@ const geminiRequestSchema = {
     args: {
       type: 'array',
       items: { type: 'string' }
+    },
+    files: {
+      type: 'array',
+      items: fileSchema
     }
   }
 } as const;
@@ -33,7 +46,7 @@ export async function geminiRoutes(fastify: FastifyInstance): Promise<void> {
     '/gemini/ask',
     {
       schema: {
-        description: 'Execute a Gemini CLI command with the provided prompt',
+        description: 'Execute a Gemini CLI command with the provided prompt and optional file attachments.',
         tags: ['gemini'],
         body: geminiRequestSchema,
         response: {
@@ -54,7 +67,7 @@ export async function geminiRoutes(fastify: FastifyInstance): Promise<void> {
       }
     },
     async (request: FastifyRequest<{ Body: GeminiRequest }>, reply: FastifyReply) => {
-      const { prompt, args = [] } = request.body;
+      let { prompt, args = [], files = [] } = request.body;
 
       if (!prompt || typeof prompt !== 'string' || prompt.trim().length === 0) {
         return reply.status(400).send({ error: 'Prompt is required and must be a non-empty string' });
@@ -67,6 +80,16 @@ export async function geminiRoutes(fastify: FastifyInstance): Promise<void> {
           try {
             // Create a new temporary directory for this request
             tempDir = await mkdtemp(join(tmpdir(), 'gemini-'));
+
+            // Handle file attachments
+            if (files && files.length > 0) {
+              for (const file of files) {
+                const decodedData = Buffer.from(file.data, 'base64');
+                await writeFile(join(tempDir, file.fileName), decodedData);
+              }
+              const fileNames = files.map(f => `@${f.fileName}`).join(' ');
+              prompt = `Here are the user provided files for context: ${fileNames}\n\n${prompt}`;
+            }
             
             const geminiArgs = ['--sandbox', prompt, ...args];
             
