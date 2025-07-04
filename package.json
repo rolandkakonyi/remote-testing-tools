@@ -2,7 +2,7 @@
   "name": "remote-testing-tools",
   "version": "1.0.0",
   "private": true,
-  "description": "Local Action Server - A lightweight, extensible server for triggering local command-line actions",
+  "description": "Remote Testing Tools - A lightweight, extensible server for triggering local command-line actions in test automation",
   "workspaces": [
     "packages/*"
   ],

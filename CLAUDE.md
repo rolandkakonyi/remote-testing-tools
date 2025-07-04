@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is a TypeScript monorepo containing a local action server and Swift client. The server provides a REST API for triggering local command-line actions (currently focused on Gemini CLI integration) and is designed to run in trusted environments only.
+This is a TypeScript monorepo containing Remote Testing Tools server and Swift client. The server provides a REST API for triggering local command-line actions (currently focused on Gemini CLI integration) and is designed to run in trusted environments only.
 
 ## Architecture
 

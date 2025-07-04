@@ -25,8 +25,8 @@ export async function buildApp(config: ServerConfig): Promise<FastifyInstance> {
   await fastify.register(fastifySwagger, {
     openapi: {
       info: {
-        title: 'Local Action Server',
-        description: 'A lightweight, extensible server for triggering local command-line actions',
+        title: 'Remote Testing Tools',
+        description: 'A lightweight, extensible server for triggering local command-line actions in test automation',
         version: '1.0.0'
       },
       servers: [

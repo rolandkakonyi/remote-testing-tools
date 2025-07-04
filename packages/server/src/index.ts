@@ -1,8 +1,11 @@
 import { buildApp } from './app.js';
 import { serverConfig } from './lib/config.js';
+import { cleanupOrphanedDirectories } from './lib/cleanup.js';
 
 async function start(): Promise<void> {
   try {
+    await cleanupOrphanedDirectories();
+    
     const app = await buildApp(serverConfig);
 
     const address = await app.listen({
@@ -10,7 +13,7 @@ async function start(): Promise<void> {
       host: serverConfig.host
     });
 
-    console.log(`🚀 Local Action Server running at ${address}`);
+    console.log(`🚀 Remote Testing Tools running at ${address}`);
     console.log(`📚 API Documentation available at ${address}/docs`);
 
     // Graceful shutdown

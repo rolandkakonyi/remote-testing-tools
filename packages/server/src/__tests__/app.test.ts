@@ -3,7 +3,7 @@ import request from 'supertest';
 import { buildApp } from '../app.js';
 import type { FastifyInstance } from 'fastify';
 
-describe('Local Action Server', () => {
+describe('Remote Testing Tools', () => {
   let app: FastifyInstance;
 
   beforeEach(async () => {
@@ -42,7 +42,7 @@ describe('Local Action Server', () => {
 
       expect(response.body).toHaveProperty('openapi');
       expect(response.body).toHaveProperty('info');
-      expect(response.body.info.title).toBe('Local Action Server');
+      expect(response.body.info.title).toBe('Remote Testing Tools');
     });
 
     it('should serve Swagger UI', async () => {

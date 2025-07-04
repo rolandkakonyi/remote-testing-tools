@@ -1,6 +1,6 @@
-# TODO: Local Action Server Implementation Plan (Updated)
+# TODO: Remote Testing Tools Implementation Plan (Updated)
 
-This document outlines the step-by-step plan to implement the remaining features for the Local Action Server based on the requirements in `docs/spec.md` and the existing codebase.
+This document outlines the step-by-step plan to implement the remaining features for the Remote Testing Tools based on the requirements in `docs/spec.md` and the existing codebase.
 
 ---
 

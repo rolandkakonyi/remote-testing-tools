@@ -16,7 +16,7 @@ A lightweight, extensible server designed to run on a local machine or within a 
 
 ```bash
 # Via npx (recommended)
-npx github:yourusername/remote-testing-tools
+npx github:yourusername/remote-testing-tools remote-testing-tools
 
 # Or clone and run locally
 git clone https://github.com/yourusername/remote-testing-tools.git

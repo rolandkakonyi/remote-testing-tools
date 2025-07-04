@@ -1,4 +1,4 @@
-# Software Development Document: Local Action Server
+# Software Development Document: Remote Testing Tools
 
 **Version:** 5.7
 **Date:** July 4, 2025
@@ -6,7 +6,7 @@
 
 ## 1. Overview and Project Philosophy
 
-This document outlines the design for the **Local Action Server**, a lightweight, extensible server designed to run on a local machine or within a private CI network. Its purpose is to provide an API that triggers local command-line actions, acting as a bridge for E2E tests or other automated tools.
+This document outlines the design for the **Remote Testing Tools**, a lightweight, extensible server designed to run on a local machine or within a private CI network. Its purpose is to provide an API that triggers local command-line actions, acting as a bridge for E2E tests or other automated tools.
 
 The server's design is guided by the following principles:
 

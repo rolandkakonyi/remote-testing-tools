@@ -12,7 +12,7 @@ async function cli(): Promise<void> {
       host: serverConfig.host
     });
 
-    console.log(`🚀 Local Action Server running at ${address}`);
+    console.log(`🚀 Remote Testing Tools running at ${address}`);
     console.log(`📚 API Documentation available at ${address}/docs`);
     console.log('\nPress Ctrl+C to stop the server');
 

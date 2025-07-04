@@ -1,11 +1,11 @@
 {
   "name": "server",
   "version": "1.0.0",
-  "description": "Local Action Server - Core API server",
+  "description": "Remote Testing Tools - Core API server for test automation",
   "type": "module",
   "main": "dist/index.js",
   "bin": {
-    "local-action-server": "dist/cli.js"
+    "remote-testing-tools": "dist/cli.js"
   },
   "scripts": {
     "build": "tsc",
