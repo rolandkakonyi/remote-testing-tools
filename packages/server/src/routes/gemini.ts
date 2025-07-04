@@ -1,5 +1,8 @@
 import { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
 import { execa } from 'execa';
+import { mkdtemp, rm } from 'fs/promises';
+import { tmpdir } from 'os';
+import { join } from 'path';
 import { defaultQueue } from '../lib/queue.js';
 import type { GeminiRequest, GeminiResponse } from '../types/index.js';
 
@@ -59,14 +62,32 @@ export async function geminiRoutes(fastify: FastifyInstance): Promise<void> {
 
       try {
         const result = await defaultQueue.add(async () => {
-          const geminiArgs = [prompt, ...args];
+          let tempDir: string | undefined;
           
-          const subprocess = execa('gemini', geminiArgs, {
-            timeout: 30000,
-            killSignal: 'SIGTERM'
-          });
+          try {
+            // Create a new temporary directory for this request
+            tempDir = await mkdtemp(join(tmpdir(), 'gemini-'));
+            
+            const geminiArgs = [prompt, ...args];
+            
+            const subprocess = execa('gemini', geminiArgs, {
+              timeout: 30000,
+              killSignal: 'SIGTERM',
+              cwd: tempDir
+            });
 
-          return subprocess;
+            return subprocess;
+          } finally {
+            // Clean up temporary directory
+            if (tempDir) {
+              try {
+                await rm(tempDir, { recursive: true, force: true });
+              } catch (cleanupError) {
+                // Log cleanup errors but don't fail the request
+                fastify.log.warn({ error: cleanupError, tempDir }, 'Failed to cleanup temporary directory');
+              }
+            }
+          }
         });
 
         const response: GeminiResponse = {
